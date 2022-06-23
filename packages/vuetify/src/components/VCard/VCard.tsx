@@ -117,6 +117,7 @@ export const VCard = defineComponent({
         >
           { hasImage && (
             <VDefaultsProvider
+              key="image"
               defaults={{
                 VImg: {
                   cover: true,
@@ -130,27 +131,64 @@ export const VCard = defineComponent({
 
           { slots.media?.() }
 
-          { hasListItem && (
-            <VCardItem
-              prependAvatar={ props.prependAvatar }
-              prependIcon={ props.prependIcon }
-              title={ props.title }
-              subtitle={ props.subtitle }
-              appendAvatar={ props.appendAvatar }
-              appendIcon={ props.appendIcon }
-            >
-              {{
-                default: slots.item,
-                prepend: slots.prepend,
-                title: slots.title,
-                subtitle: slots.subtitle,
-                append: slots.append,
-              }}
-            </VCardItem>
+          { hasHeader && (
+            <VCardHeader key="header">
+              { hasPrepend && (
+                <VDefaultsProvider
+                  key="prepend"
+                  defaults={{
+                    VAvatar: {
+                      density: props.density,
+                      icon: props.prependIcon,
+                      image: props.prependAvatar,
+                    },
+                  }}
+                >
+                  <VCardAvatar>
+                    { slots.prepend ? slots.prepend() : (<VAvatar />) }
+                  </VCardAvatar>
+                </VDefaultsProvider>
+              ) }
+
+              { hasHeaderText && (
+                <VCardHeaderText key="headerText">
+                  { hasTitle && (
+                    <VCardTitle key="title">
+                      { slots.title ? slots.title() : props.title}
+                    </VCardTitle>
+                  ) }
+
+                  { hasSubtitle && (
+                    <VCardSubtitle key="subtitle">
+                      { slots.subtitle ? slots.subtitle() : props.subtitle }
+                    </VCardSubtitle>
+                  ) }
+
+                  { slots['header-text']?.() }
+                </VCardHeaderText>
+              ) }
+
+              { hasAppend && (
+                <VDefaultsProvider
+                  key="append"
+                  defaults={{
+                    VAvatar: {
+                      density: props.density,
+                      icon: props.appendIcon,
+                      image: props.appendAvatar,
+                    },
+                  }}
+                >
+                  <VCardAvatar>
+                    { slots.append ? slots.append() : (<VAvatar />) }
+                  </VCardAvatar>
+                </VDefaultsProvider>
+              ) }
+            </VCardHeader>
           ) }
 
           { hasText && (
-            <VCardText>
+            <VCardText key="text">
               { slots.text ? slots.text() : props.text }
             </VCardText>
           ) }
